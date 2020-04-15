@@ -4,7 +4,7 @@ import numpy as np
 
 def increase_action(current): 
     to_return = ""                    
-    if current == "0": to_return = "a08"             # a08 = cheer up 
+    if current == "0": to_return = "a08"            # a08 = cheer up 
     elif current == "a08": to_return = "a10"        # a10 = toss paper
     elif current == "a10": to_return = "a12"        # a12 = lie on sofa 
     elif current == "a12": to_return = "a13"        # a13 = walk 
@@ -16,12 +16,13 @@ def increase_action(current):
 
 def increase_human_subject(current): 
     to_return = ""
-    if current == "": to_return = "s01" 
+    if current == "": to_return = "s07" 
     else: 
         current = current[1:]
         next = int(current) + 1
-        if next == 7: to_return = "s01"
-        elif next < 7: to_return = "s0" + str(next)
+        if next == 11: to_return = "s07"
+        elif next == 10: to_return = "s10"
+        elif next < 10: to_return = "s0" + str(next)
         else: raise Exception('subject number should not exceed 7')
     
     return to_return
@@ -103,11 +104,11 @@ def normalize(histogram, num_frames):
 
 def main(): 
 
-    in_file_prefix = "/home/aleto14/robotics/project_3/dataset/train/"
+    in_file_prefix = "/home/aleto14/robotics/project_3/dataset/test/"
     in_file_suffix = "_skeleton_proj.txt"
-    num_files = 72
+    num_files = 48
 
-    out_file_name = "rad_d1"
+    out_file_name = "rad_d1.t"
     out_file = open(out_file_name, "w")
 
 
@@ -117,7 +118,7 @@ def main():
       
 
     for i in range(0, num_files): 
-        if i % 12 == 0: action_number = increase_action(action_number)
+        if i % 8 == 0: action_number = increase_action(action_number)
         if i % 2 == 0: subject_number = increase_human_subject(subject_number)
         trial_number = increase_human_trial(trial_number)
         in_file_name = get_file_name(action_number, subject_number, trial_number, in_file_prefix, in_file_suffix)
