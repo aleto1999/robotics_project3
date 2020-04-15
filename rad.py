@@ -14,16 +14,25 @@ def increase_action(current):
     else: raise Exception('action number should not exceed 16')
     return to_return
 
-def increase_human_subject(current): 
+def increase_human_subject(mode, current): 
     to_return = ""
-    if current == "": to_return = "s01" 
-    else: 
-        current = current[1:]
-        next = int(current) + 1
-        if next == 7: to_return = "s01"
-        elif next < 7: to_return = "s0" + str(next)
-        else: raise Exception('subject number should not exceed 7')
-    
+    if mode == 1: 
+        if current == "": to_return = "s01" 
+        else: 
+            current = current[1:]
+            next = int(current) + 1
+            if next == 7: to_return = "s01"
+            elif next < 7: to_return = "s0" + str(next)
+            else: raise Exception('subject number should not exceed 7')
+    elif mode == 2: 
+        if current == "": to_return = "s07" 
+        else: 
+            current = current[1:]
+            next = int(current) + 1
+            if next == 11: to_return = "s07"
+            elif next == 10: to_return = "s10"
+            elif next < 10: to_return = "s0" + str(next)
+            else: raise Exception('subject number should not exceed 7')    
     return to_return
 
 def increase_human_trial(current):
@@ -90,6 +99,7 @@ def make_histo(num_bins, min_, max_, data_set):
             if current <= temp: 
                 histogram[j] = histogram[j] + 1 
                 break
+            elif j == (num_bins - 1): histogram[j] = histogram[j] + 1
 
     return histogram 
 
@@ -101,13 +111,23 @@ def normalize(histogram, num_frames):
     return histogram  
 
 
-def main(): 
+def run(mode):
 
-    in_file_prefix = "/home/aleto14/robotics/project_3/dataset/train/"
-    in_file_suffix = "_skeleton_proj.txt"
-    num_files = 72
+    if mode == 1: 
+        in_file_prefix = "/home/aleto14/robotics/project_3/dataset/train/"
+        in_file_suffix = "_skeleton_proj.txt"
+        out_file_name = "rad_d1"
+        num_files = 72
+        change_action = 12
+    elif mode == 2: 
+        in_file_prefix = "/home/aleto14/robotics/project_3/dataset/test/"
+        in_file_suffix = "_skeleton_proj.txt"
+        out_file_name = "rad_d1.t"
+        num_files = 48
+        change_action = 8
+    else: raise Exception('mode number not valid')
 
-    out_file_name = "rad_d1"
+        
     out_file = open(out_file_name, "w")
 
 
@@ -117,12 +137,12 @@ def main():
       
 
     for i in range(0, num_files): 
-        if i % 12 == 0: action_number = increase_action(action_number)
-        if i % 2 == 0: subject_number = increase_human_subject(subject_number)
+        if i % change_action == 0: action_number = increase_action(action_number)
+        if i % 2 == 0: subject_number = increase_human_subject(mode, subject_number)
         trial_number = increase_human_trial(trial_number)
         in_file_name = get_file_name(action_number, subject_number, trial_number, in_file_prefix, in_file_suffix)
         in_file = open(in_file_name, "r")
-        print(in_file_name)
+        # print(in_file_name)
 
         # write each file into one line 
         distances_0 = []
@@ -174,9 +194,9 @@ def main():
         # make histogram for each set of angles 
         hist_angles = []
 
-        hist_angles_0 = make_histo(10, 10, 170, angles_0)
+        hist_angles_0 = make_histo(10, 10, 160, angles_0)
         hist_angles.extend(hist_angles_0)
-
+        
         hist_angles_1 = make_histo(10, 5, 160, angles_1)
         hist_angles.extend(hist_angles_1)
 
@@ -219,6 +239,10 @@ def main():
 
     out_file.close()
 
+def main():
+
+    run(1) # run algorithm on training files
+    run(2) # run algorithm on testing files 
 
 if __name__ == "__main__": 
     main()

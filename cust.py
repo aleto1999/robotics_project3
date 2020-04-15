@@ -14,16 +14,25 @@ def increase_action(current):
     else: raise Exception('action number should not exceed 16')
     return to_return
 
-def increase_human_subject(current): 
+def increase_human_subject(mode, current): 
     to_return = ""
-    if current == "": to_return = "s01" 
-    else: 
-        current = current[1:]
-        next = int(current) + 1
-        if next == 7: to_return = "s01"
-        elif next < 7: to_return = "s0" + str(next)
-        else: raise Exception('subject number should not exceed 7')
-    
+    if mode == 1: 
+        if current == "": to_return = "s01" 
+        else: 
+            current = current[1:]
+            next = int(current) + 1
+            if next == 7: to_return = "s01"
+            elif next < 7: to_return = "s0" + str(next)
+            else: raise Exception('subject number should not exceed 7')
+    elif mode == 2: 
+        if current == "": to_return = "s07" 
+        else: 
+            current = current[1:]
+            next = int(current) + 1
+            if next == 11: to_return = "s07"
+            elif next == 10: to_return = "s10"
+            elif next < 10: to_return = "s0" + str(next)
+            else: raise Exception('subject number should not exceed 7')    
     return to_return
 
 def increase_human_trial(current):
@@ -105,25 +114,32 @@ def normalize(histogram, num_frames):
     return histogram  
 
 
-def main(): 
+def run(mode): 
 
-    in_file_prefix = "/home/aleto14/robotics/project_3/dataset/train/"
-    in_file_suffix = "_skeleton_proj.txt"
-    num_files = 72
+    if mode == 1: 
+        in_file_prefix = "/home/aleto14/robotics/project_3/dataset/train/"
+        in_file_suffix = "_skeleton_proj.txt"
+        out_file_name = "cust_d1"
+        num_files = 72
+        change_action = 12
+    elif mode == 2: 
+        in_file_prefix = "/home/aleto14/robotics/project_3/dataset/test/"
+        in_file_suffix = "_skeleton_proj.txt"
+        out_file_name = "cust_d1.t"
+        num_files = 48
+        change_action = 8
+    else: raise Exception('mode number not valid')
 
-    out_file_name = "cust_d1"
     out_file = open(out_file_name, "w")
 
     action_number = "0"
     subject_number = "" 
     trial_number = ""
 
-    max_ = []
-    min_ = []
       
     for i in range(0, num_files): 
-        if i % 12 == 0: action_number = increase_action(action_number)
-        if i % 2 == 0: subject_number = increase_human_subject(subject_number)
+        if i % change_action == 0: action_number = increase_action(action_number)
+        if i % 2 == 0: subject_number = increase_human_subject(mode, subject_number)
         trial_number = increase_human_trial(trial_number)
         in_file_name = get_file_name(action_number, subject_number, trial_number, in_file_prefix, in_file_suffix)
         in_file = open(in_file_name, "r")
@@ -205,9 +221,7 @@ def main():
         
         # head / left foot 
         hist_dist_7 = make_histo(10, 0.6, 1.6, distances_7)
-        hist_distances.extend(hist_dist_7)
-        print(hist_dist_7)
-        
+        hist_distances.extend(hist_dist_7)        
 
         hist_distances = normalize(hist_distances, frames)
 
@@ -219,6 +233,10 @@ def main():
 
     out_file.close()
 
+def main(): 
+
+    run(1) # run for training files
+    run(2) # run for testing files
 
 if __name__ == "__main__": 
     main()
