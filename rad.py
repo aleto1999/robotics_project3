@@ -114,13 +114,13 @@ def normalize(histogram, num_frames):
 def run(mode):
 
     if mode == 1: 
-        in_file_prefix = "/home/aleto14/robotics/project_3/dataset/train/"
+        in_file_prefix = "dataset/train/"
         in_file_suffix = "_skeleton_proj.txt"
         out_file_name = "rad_d1"
         num_files = 72
         change_action = 12
     elif mode == 2: 
-        in_file_prefix = "/home/aleto14/robotics/project_3/dataset/test/"
+        in_file_prefix = "dataset/test/"
         in_file_suffix = "_skeleton_proj.txt"
         out_file_name = "rad_d1.t"
         num_files = 48

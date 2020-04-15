@@ -69,24 +69,6 @@ def compute_distances(points):
     distances.append(distance(head, points[8]))
     return distances 
 
-def angle(a, b, c): 
-    angle = ""
-    a_2 = a ** 2
-    b_2 = b ** 2
-    c_2 = c ** 2
-    cos_B = (a_2 - b_2 + c_2) / (2 * c * a)
-    angle = np.degrees(np.arccos(cos_B))
-    return angle 
-
-def compute_angles(distances, points):
-    angles = []
-    angles.append(angle(distances[0],distance(points[1], points[2]),distances[1]))
-    angles.append(angle(distances[1],distance(points[2], points[4]),distances[3]))
-    angles.append(angle(distances[3],distance(points[4], points[5]),distances[4]))
-    angles.append(angle(distances[4],distance(points[5], points[3]),distances[2]))
-    angles.append(angle(distances[2],distance(points[1], points[3]),distances[0]))
-    return angles 
-
 def make_histo(num_bins, min_, max_, data_set):
     histogram = []
     step = (max_ - min_) / float(num_bins)
@@ -117,13 +99,13 @@ def normalize(histogram, num_frames):
 def run(mode): 
 
     if mode == 1: 
-        in_file_prefix = "/home/aleto14/robotics/project_3/dataset/train/"
+        in_file_prefix = "dataset/train/"
         in_file_suffix = "_skeleton_proj.txt"
         out_file_name = "cust_d1"
         num_files = 72
         change_action = 12
     elif mode == 2: 
-        in_file_prefix = "/home/aleto14/robotics/project_3/dataset/test/"
+        in_file_prefix = "dataset/test/"
         in_file_suffix = "_skeleton_proj.txt"
         out_file_name = "cust_d1.t"
         num_files = 48
